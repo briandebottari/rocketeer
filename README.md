@@ -18,8 +18,6 @@ This script uses `zenity` command.
 
 ## Apps Rocketeer
 
-Located in **rocketeer-apps.sh**.
-
 GUI:
 
 * Agave
@@ -39,8 +37,6 @@ CLI:
 * curl
 
 ## WebDev Rocketeer
-
-Located in **rocketeer-webdev.sh**.
 
 PHP:
 
