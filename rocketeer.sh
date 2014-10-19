@@ -39,198 +39,188 @@ EOT
 
 echo -e "\033[32m $(rocketeer)"
 echo -e "\033[34m Rocketeer : piqus/rocketeer"
-echo -e "\033[35m for Ubuntu 13.04"
+echo -e "\033[35m for Ubuntu 14.04"
 echo -e "\033[32m ****************************************************"
+echo -e "\033[34m Open rocketeer.sh and append these functions what you want execute"
 echo -e "\033[0m"
 
-selection=$(zenity --list "Chmod RWX", "Chmod Std", "Vhost", "Apps" "WebDev" "Theme", "AptGet Update List"  --column="" --text="Action" --title="Rocketeer")
-case "$selection" in
-"Apps")
-	echo_green "---------------------------------------"
-	echo_green "Apps"
-	echo_green "---------------------------------------"
+CLI_APPS="aptitude tasksel curl tree git subversion mercurial fish zsh unzip unrar-free"
+GUI_APPS="rapidsvn synaptic gksu agave git-cola rapidsvn mysql-workbench keepass2 keepassx thunderbird chromium-browser inkscape gimp shutter pidgin filezilla"
+TASKSEL="lamp-server phpmyadmin"
+PPA_APPS="sublime-text oh-my-zsh nodejs atom spotify-client keepassx"
+MISC="ssh tmux vim git-core wget zip unzip mcrypt imagemagick libmagickwand-dev htop whois dnsutils powertop gparted zenmap terminator"
 
-	# Set up Jetpack
-	APPS=( aptitude agave chromium-browser curl gimp gnome-tweak-tool inkscape keepass2 shutter sublime-text synaptic unity-tweak-tool )
+function install() {
+    sudo apt-get install -y $1
+}
 
-	echo_orange "Adding new sources"
-	echo_orange "*********************"
-	sudo add-apt-repository ppa:webupd8team/sublime-text-2
+function fishell() {
+    sudo apt-add-repository ppa:fish-shell/release-2
+    sudo apt-get update
+    install fish
+}
 
-	echo_orange "Updating source lists"
-	echo_orange "*********************"
-	sudo apt-get update
+function zukitwo() {
+    install gtk2-engines-murrine gtk2-engines-pixbuf
+    #https://github.com/lassekongo83/zuki-themes
+    wget "https://github.com/lassekongo83/zuki-themes/archive/master.zip"
+    unzip "zuki-themes-master.zip"
+    mv zuki-themes-master/* ~/.themes
+}
 
-	# Let's fly
-	echo_orange "Installing application"
-	echo_orange "*********************"
-	for APP in ${APPS[@]}
-	do
-		echo_cyan "# Installing $APP"
-		fly sudo apt-get install $APP -y
-	done
+function sublime() {
+    curl -sS "http://c758482.r82.cf2.rackcdn.com/sublime-text_build-3059_amd64.deb" > sublime-text_build-3059_amd64.deb
+    sudo dpkg --install sublime-text_build-3059_amd64.deb 
+}
 
-	echo_green "========================"
-	echo_green "# Completed successfully"
-	echo_green "========================"
-	;;
-"WebDev")
-	echo_green "---------------------------------------"
-	echo_green "WebDev"
-	echo_green "---------------------------------------"
+function upgrade() {
+    sudo apt-get update
+    sudo apt-get upgrade
+}
 
-	# Set up Jetpack
-	APPS=( curl python-software-properties python g++ make sublime-text nodejs tasksel mongodb-10gen git mercurial subversion rapidsvn pidgin)
-	NPMPGKS="yo grunt-cli bower less express"
-	MYWORKSPACE="web"
-	cd "${HOME}/${MYWORKSPACE}/"
+function atom() {
+    sudo add-apt-repository ppa:webupd8team/atom
+    sudo apt-get update
+    install atom
+}
 
-	echo_orange "Adding new sources"
-	echo_orange "*********************"
-	sudo add-apt-repository ppa:webupd8team/sublime-text-2
-	sudo add-apt-repository ppa:chris-lea/node.js
-	sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
-	echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/10gen.list
+function brackets() {
+    curl -sS "https://github.com/adobe/brackets/releases/download/release-0.42/Brackets.Release.0.42.64-bit.deb"
+}
 
-	echo_orange "Updating source lists"
-	echo_orange "*********************"
-	sudo apt-get update
+function nodejs() {
+    curl -sL https://deb.nodesource.com/setup |sudo bash -
+    install nodejs
+}
 
-	echo_orange "Installing application"
-	echo_orange "*********************"
-	for APP in ${APPS[@]}
-	do
-		echo_cyan "# Installing $APP"
-		fly sudo apt-get install $APP -y
-	done
+function spotify() {
+    echo "deb http://repository.spotify.com stable non-free" > sudo tee -a /etc/apt/sources.list.d/spotify.list
+    sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 94558F59
+    sudo apt-get update
+    install spotify-client
+}
 
-	echo_cyan "# Installing lamp-server"
-	fly sudo tasksel install lamp-server
-
-	echo_cyan "# Installing phpmyadmin, adminer, mysql-workbench"
-	fly sudo apt-get install phpmyadmin adminer mysql-workbench -y
-
-	echo_cyan "# Installing php5-dev, php-pear"
-	fly sudo apt-get install php5-dev php-pear php5-mongo -y
-
-	echo_cyan "# Installing npm packages globally"
-	sudo npm install -g $NPMPGKS
-
-	curl -sS https://getcomposer.org/installer | php
-	sudo mv composer.phar /usr/local/bin/composer
-
-	# echo_cyan "# Installing redis"
-	# wget http://download.redis.io/redis-stable.tar.gz
-	# tar xvzf redis-stable.tar.gz
-	# cd redis-stable
-	# make
-	# sudo cp redis-server /usr/local/bin/
-	# sudo cp redis-cli /usr/local/bin/
-	# cd ..
-	
-	mkdir "${HOME}/${MYWORKSPACE}"
-
-	# echo ~/.bash_proflle >> "export WORKSPACE=${HOME}/$MYWORKSPACE"
-
-	sudo chown -R $USER:$USER /var/www
-	sudo a2enmod rewrite
-
-	echo "ServerName localhost" | sudo tee /etc/apache2/conf.d/fqdn
-
-	echo_green "========================"
-	echo_green "# Completed successfully"
-	echo_green "========================"
-	;;
-"Theme")
-	echo_green "---------------------------------------"
-	echo_green "Look'ma new jetpack"
-	echo_green "---------------------------------------"
-
-	# Set up Jetpack
-	echo_orange "Adding new sources"
-	echo_orange "*********************"
-	sudo add-apt-repository ppa:tiheum/equinox
-
-	echo_orange "Updating source lists"
-	echo_orange "*********************"
-	sudo apt-get update
-
-	# Let's fly
-	echo_orange "Installing application"
-	echo_orange "*********************"				
-	echo_cyan "# Installing faience-theme"
-	fly sudo apt-get install faience-theme faience-icon-theme -y
-
-
-	echo_green "========================"
-	echo_green "# Completed successfully"
-	echo_green "========================"
-	zenity --info --text="Not finished yet"
-	;;
-"AptGet Update List")
-	echo_orange 'Update Packages List'
-	echo_orange "*********************"	
-	fly sudo apt-get update
-
-	echo_green "========================"
-	echo_green "# Completed successfully"
-	echo_green "========================"
-	;;
-"Chmod RWX")
-	echo_orange 'Choose location (mod)'
-	echo_orange "*********************"	
-	read LOCATION
-	fly sudo find $LOCATION -type f -exec chmod 666 {} \;
-	fly sudo find $LOCATION -type d -exec chmod 777 {} \;
-	fly sudo chown user:group -R $LOCATION
-
-	echo_green "========================"
-	echo_green "# Completed successfully"
-	echo_green "========================"
-	;;
-"Chmod Std")
-	echo_orange 'Choose location (std)'
-	echo_orange "*********************"	
-	read LOCATION
-	fly sudo find $LOCATION -type f -exec chmod 644 {} \;
-	fly sudo find $LOCATION -type d -exec chmod 755 {} \;
-	fly sudo chown user:group -R $LOCATION
-
-	echo_green "========================"
-	echo_green "# Completed successfully"
-	echo_green "========================"
-	;;
-"Vhost")
-	echo_green "---------------------------------------"
-	echo_green "vhost generator"
-	echo_green "---------------------------------------"
-	echo_cyan "Web location (i.e. wwwmylaravel.com)"
-	read TMP_HOST
-	echo_cyan "Alias (i.e. www.wwwmylaravel.com)"
-	read TMP_ALIAS
-	echo_cyan "Local folder location (i.e. /home/me/web/my-laravel/)"
-	read TMP_LOCATION
-
-	cat <<Endofmessage
-<VirtualHost *:80>
-    ServerName $TMP_HOST
-    ServerAlias $TMP_ALIAS
+function gnome_shell_extensions() {
+    echo "https://extensions.gnome.org/extension/307/dash-to-dock/"
+    echo "https://extensions.gnome.org/extension/53/pomodoro/"
+    echo "https://extensions.gnome.org/extension/442/drop-down-terminal/"
+    echo "https://extensions.gnome.org/extension/584/taskbar/"
+    echo "https://extensions.gnome.org/extension/495/topicons/"
     
-    DocumentRoot "$TMP_LOCATION"
-    <Directory "$TMP_LOCATION">
-       	Options Indexes FollowSymLinks MultiViews
-        AllowOverride all
-        allow from all
-    </Directory>
+    sudo add-apt-repository ppa:gnome-shell-extensions
+    sudo apt-get update
+    install gnome-shell-extension-weather
 
-    ErrorLog "${APACHE_LOG_DIR}/${TMP_HOST}-error.log"
-    CustomLog "${APACHE_LOG_DIR}/${TMP_HOST}-access.log" common
-</VirtualHost>
-Endofmessage
-	echo_orange "Copy it to file!!"
+}
 
-	echo_green "========================"
-	echo_green "# Completed successfully"
-	echo_green "========================"
-	;;		
-esac
+function lamp() {
+    install tasksel
+    sudo tasksel install lamp-server
+    echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/fqdn.conf && sudo a2enconf fqdn
+    sudo a2enmod rewrite php5 unique_id ssl alias
+    sudo php5enmod mcrypt
+    sudo service apache2 restart
+}
+
+function phpmyadmin() {
+    # require lamp
+    install phpmyadmin
+    echo "\nInclude /etc/phpmyadmin/apache.conf" | sudo tee -a /etc/apache2/apache2.conf
+    sudo service apache2 restart
+}
+
+function php_composer() {
+    # require php
+    curl -sS https://getcomposer.org/installer | php
+    sudo mv composer.phar /usr/local/bin/composer
+}
+
+function phpize() {
+    install php5-dev php-pear
+}
+
+function phpmongo() {
+    echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee -a /etc/apt/sources.list.d/mongodb.list
+    sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+    sudo apt-get update
+    install mongodb-org php5-mongo     
+}
+
+function pomodoro() {
+    install gnome-common intltool valac libglib2.0-dev gobject-introspection libgirepository1.0-dev libgtk-3-dev libgnome-desktop-3-dev libcanberra-dev libdbus-glib-1-dev libgstreamer1.0-dev libupower-glib-dev fonts-droid
+
+    version=`gnome-shell --version | cut --delimiter=' ' -f 3`
+    versions="3.13\n3.12\n3.10\n3.08\n$version"
+    version_check=`echo $versions | sort -n | grep "$version" -n | cut -d':' -f 1`
+
+    link=""
+    [[ $version_check = 2 ]] && link="https://codeload.github.com/codito/gnome-shell-pomodoro/legacy.tar.gz/gnome-3.12"
+    [[ $version_check = 3 ]] && link="https://codeload.github.com/codito/gnome-shell-pomodoro/legacy.tar.gz/gnome-3.10"
+    [[ $version_check = 4 ]] && link="https://codeload.github.com/codito/gnome-shell-pomodoro/legacy.tar.gz/gnome-3.8"
+
+    if [[ $link -eq 1 ]]; then
+        echo "Manual installation nedeed: https://github.com/codito/gnome-shell-pomodoro"
+    else
+        curl -sS $link > gnome-shell-pomodoro.tar.gz
+        tar -xzf gnome-shell-pomodoro.tar.gz
+        cd codito-gnome-shell-pomodoro-*
+        ./autogen.sh --prefix=/usr --datadir=/usr/share
+        make
+        sudo make install
+    fi
+
+    gnome-pomodoro &
+    cd ..
+}
+
+function zsh() {
+    install zsh git
+    curl -L http://install.ohmyz.sh | sh
+}
+
+function docker() {
+    curl -Ss https://get.docker.io/ubuntu/ > docker.sh
+    sudo bash docker.sh
+}
+
+function keepassx() {
+    sudo apt-add-repository ppa:keepassx/daily
+    sudo apt-get update
+    install keepassx
+}
+
+
+function nautilus_fix() {
+    # You can also change background color to #17191D <3
+    install nautilus-open-terminal 
+}
+
+function addvars() {
+    export APACHE_LOG_DIR="/var/log/apache2/"
+}
+
+
+## Example (just uncomment):
+## @todo: add fancy interactive mode
+## ----------
+# upgrade
+# install $CLI_APPS
+# lamp
+# phpmyadmin
+# phpize
+# fishell
+# php_composer
+# phpmongo
+
+
+## Example (or with expliciting error):
+## @todo: add better verbose mode
+## ----------
+# fly upgrade
+# fly install $CLI_APPS
+# fly lamp
+# fly phpmyadmin
+# fly phpize
+# fly fishell
+# fly php_composer
+# fly phpmongo
