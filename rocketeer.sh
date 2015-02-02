@@ -1,54 +1,7 @@
-#!/usr/bin/env
-# Inspired from thoughtbot/laptop
-CLEAR="\033[0m"
-ORANGE="\033[33m"
-GREEN="\033[32m"
-CYAN="\033[36m"
-RED="\033[31m"
-
-echo_orange() {
-  echo -e ${ORANGE}$1${CLEAR}
-}
-
-echo_green() {
-	echo -e ${GREEN}$1${CLEAR}
-}
-
-echo_cyan() {
-	echo -e ${CYAN}$1${CLEAR}
-}
-
-echo_red() {
-	echo -n ${RED}$1${CLEAR}
-}
-
-fly() {
-  $* || (echo_red "Failed" 1>&2 && exit 1)
-}
-
-rocketeer() {
-cat  <<"EOT"
-                   ______      _____                  
-______________________  /________  /__________________
-__  ___/  __ \  ___/_  //_/  _ \  __/  _ \  _ \_  ___/
-_  /   / /_/ / /__ _  ,<  /  __/ /_ /  __/  __/  /    
-/_/    \____/\___/ /_/|_| \___/\__/ \___/\___//_/      
-EOT
-}
-
-
-echo -e "\033[32m $(rocketeer)"
-echo -e "\033[34m Rocketeer : piqus/rocketeer"
-echo -e "\033[35m for Ubuntu 14.04"
-echo -e "\033[32m ****************************************************"
-echo -e "\033[34m Open rocketeer.sh and append these functions what you want execute"
-echo -e "\033[0m"
-
+#!/bin/bash
 CLI_APPS="aptitude tasksel curl tree git subversion mercurial fish zsh unzip unrar-free"
 GUI_APPS="rapidsvn synaptic gksu agave git-cola rapidsvn mysql-workbench keepass2 keepassx thunderbird chromium-browser inkscape gimp shutter pidgin filezilla"
-TASKSEL="lamp-server phpmyadmin"
-PPA_APPS="sublime-text oh-my-zsh nodejs atom spotify-client keepassx"
-MISC="ssh tmux vim git-core wget zip unzip mcrypt imagemagick libmagickwand-dev htop whois dnsutils powertop gparted zenmap terminator"
+MISC="ssh tmux vim git-core wget top whois dnsutils powertop gparted zenmap terminator"
 
 function install() {
     sudo apt-get install -y $1
@@ -64,7 +17,8 @@ function zukitwo() {
     install gtk2-engines-murrine gtk2-engines-pixbuf
     #https://github.com/lassekongo83/zuki-themes
     wget "https://github.com/lassekongo83/zuki-themes/archive/master.zip"
-    unzip "zuki-themes-master.zip"
+    unzip "master.zip"
+    cd "master.zip"
     mv zuki-themes-master/* ~/.themes
 }
 
@@ -75,7 +29,7 @@ function sublime() {
 
 function upgrade() {
     sudo apt-get update
-    sudo apt-get upgrade
+    sudo apt-get upgrade -y
 }
 
 function atom() {
@@ -89,6 +43,7 @@ function brackets() {
 }
 
 function nodejs() {
+    # https://deb.nodesource.com/node/dists/trusty/Release
     curl -sL https://deb.nodesource.com/setup |sudo bash -
     install nodejs
 }
@@ -116,8 +71,9 @@ function gnome_shell_extensions() {
 function lamp() {
     install tasksel
     sudo tasksel install lamp-server
+    install php5-mcrypt
     echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/fqdn.conf && sudo a2enconf fqdn
-    sudo a2enmod rewrite php5 unique_id ssl alias
+    sudo a2enmod rewrite php5 unique_id ssl vhost_alias
     sudo php5enmod mcrypt
     sudo service apache2 restart
 }
@@ -125,7 +81,9 @@ function lamp() {
 function phpmyadmin() {
     # require lamp
     install phpmyadmin
-    echo "\nInclude /etc/phpmyadmin/apache.conf" | sudo tee -a /etc/apache2/apache2.conf
+    # NOTICE: It would append line in apache2.conf without checking it exists. 
+    #         Inlude vhost line could throw error about duplicated alias.
+    echo "Include /etc/phpmyadmin/apache.conf" | sudo tee -a /etc/apache2/apache2.conf
     sudo service apache2 restart
 }
 
@@ -140,10 +98,11 @@ function phpize() {
 }
 
 function phpmongo() {
-    echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee -a /etc/apt/sources.list.d/mongodb.list
     sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+    echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
     sudo apt-get update
-    install mongodb-org php5-mongo     
+    install mongodb-org php5-mongo
+    sudo service mongod start
 }
 
 function pomodoro() {
@@ -191,8 +150,8 @@ function keepassx() {
 
 
 function nautilus_fix() {
-    # You can also change background color to #17191D <3
     install nautilus-open-terminal 
+    # Terminal #17191D
 }
 
 function addvars() {
