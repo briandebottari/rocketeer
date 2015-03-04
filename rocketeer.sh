@@ -1,7 +1,7 @@
 #!/bin/bash
 CLI_APPS="aptitude tasksel curl tree git subversion mercurial fish zsh unzip unrar-free"
-GUI_APPS="rapidsvn synaptic gksu agave git-cola rapidsvn mysql-workbench keepass2 keepassx thunderbird chromium-browser inkscape gimp shutter pidgin filezilla"
-MISC="ssh tmux vim git-core wget top whois dnsutils powertop gparted zenmap terminator"
+GUI_APPS="rapidsvn synaptic gksu agave git-cola rapidsvn mysql-workbench keepass2 keepassx thunderbird chromium-browser firefox inkscape gimp shutter pidgin filezilla"
+MISC="ssh tmux vim git wget top whois dnsutils powertop zenmap terminator"
 
 function install() {
     sudo apt-get install -y $1
@@ -23,8 +23,8 @@ function zukitwo() {
 }
 
 function sublime() {
-    curl -sS "http://c758482.r82.cf2.rackcdn.com/sublime-text_build-3059_amd64.deb" > sublime-text_build-3059_amd64.deb
-    sudo dpkg --install sublime-text_build-3059_amd64.deb 
+    curl -sS "http://c758482.r82.cf2.rackcdn.com/sublime-text_build-3065_amd64.deb" > sublime-text_build-3059_amd64.deb
+    sudo dpkg --install sublime-text_build-3065_amd64.deb 
 }
 
 function upgrade() {
@@ -39,8 +39,15 @@ function atom() {
 }
 
 function brackets() {
-    curl -sS "https://github.com/adobe/brackets/releases/download/release-0.42/Brackets.Release.0.42.64-bit.deb"
+    curl -sS "https://github.com/adobe/brackets/releases/download/release-1.2%2Beb4/Brackets.1.2.Extract.64-bit.deb"
 }
+
+function brackets_ppa() {
+    sudo add-apt-repository ppa:webupd8team/brackets
+    sudo apt-get update
+    install brackets
+}
+
 
 function nodejs() {
     # https://deb.nodesource.com/node/dists/trusty/Release
@@ -132,7 +139,7 @@ function pomodoro() {
     cd ..
 }
 
-function zsh() {
+function zshell() {
     install zsh git
     curl -L http://install.ohmyz.sh | sh
 }
@@ -158,28 +165,28 @@ function addvars() {
     export APACHE_LOG_DIR="/var/log/apache2/"
 }
 
+function restart_apache() {
+    sudo service apache2 restart
+}
+
+function add_vhost() {
+    sudo cp $1 /etc/apache2/sites-available/
+    sudo a2ensite $1
+    restart_apache
+}
+
+function rem_defvhost() {
+    sudo a2dissite 000-default.conf
+}
 
 ## Example (just uncomment):
 ## @todo: add fancy interactive mode
 ## ----------
-# upgrade
-# install $CLI_APPS
+upgrade
+# sudo apt-get install $CLI_APPS
 # lamp
 # phpmyadmin
 # phpize
-# fishell
+# zshell
 # php_composer
 # phpmongo
-
-
-## Example (or with expliciting error):
-## @todo: add better verbose mode
-## ----------
-# fly upgrade
-# fly install $CLI_APPS
-# fly lamp
-# fly phpmyadmin
-# fly phpize
-# fly fishell
-# fly php_composer
-# fly phpmongo
