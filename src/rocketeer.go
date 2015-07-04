@@ -19,7 +19,7 @@ func main() {
 }
 
 func concat() {
-	f, err := os.Create("rocketeer.dist.sh")
+	f, err := os.Create("../rocketeer.sh")
 	check(err)
 	defer f.Close()
 

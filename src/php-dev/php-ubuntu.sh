@@ -28,3 +28,11 @@ function phpmongo() {
     sudo apt-get install -y mongodb-org php5-mongo
     sudo service mongod start
 }
+
+function devvhosts() {
+    # DNSMASQ_DOMAIN="dev"
+    sudo apt-get install -y dnsmasq
+    echo "listen-address=127.0.0.1" | sudo tee -a /etc/dnsmasq.conf
+    echo "address=/dev/127.0.0.1" | sudo tee /etc/dnsmasq.d/dev
+    # echo "add proper vhost.conf"
+}
