@@ -1,53 +1,5 @@
 #!/usr/bin/env bash
-
-function keepassx() {
-    sudo apt-add-repository ppa:keepassx/daily-y
-    sudo apt-get update
-    sudo apt-get keepassx -y
-}
-
-function nautilus_fix() {
-    sudo apt-get nautilus-open-terminal -y
-}
-
-function zshell() {
-    sudo apt-get install -y zsh git
-    curl -L http://install.ohmyz.sh | sh
-}
-
-function docker() {
-    curl -Ss https://get.docker.io/ubuntu/ > docker.sh
-    sudo bash docker.sh
-}
-
-function sshgen() {
-	read -e -p "Enter Your Email:" -i "ovirendo@gmail.com" YOUR_EMAIL
-	ssh-keygen -t rsa -b 4096 -C "$YOUR_EMAIL"
-	eval "$(ssh-agent -s)"
-}
-
-function fishell() {
-    sudo apt-add-repository ppa:fish-shell/release-2 -y
-    sudo apt-get update
-    sudo apt-get install fish -y
-}
-
-function ohmyzsh() {
-    sudo apt-get zsh git -y
-    curl -L http://install.ohmyz.sh | sh
-}
-
-function sshcopy() {
-	# $1 should be id_rsa, id_github, etc. etc.
-	ssh-add ~/.ssh/$1
-	sudo apt-get install xclip
-	xclip -sel clip < ~/.ssh/$1.pub
-}
-
-function phpcomposer() {
-    curl -sS https://getcomposer.org/installer | php
-    sudo mv composer.phar /usr/local/bin/composer
-}
+# script for php lang
 
 function lamp() {
     sudo apt-get install -y tasksel
@@ -83,9 +35,4 @@ function devvhosts() {
     echo "listen-address=127.0.0.1" | sudo tee -a /etc/dnsmasq.conf
     echo "address=/dev/127.0.0.1" | sudo tee /etc/dnsmasq.d/dev
     # echo "add proper vhost.conf"
-}
-
-function nodejs() {
-    curl -sL https://deb.nodesource.com/setup |sudo bash -
-    sudo apt-get install -y nodejs
 }

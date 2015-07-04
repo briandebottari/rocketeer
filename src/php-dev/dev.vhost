@@ -1,0 +1,27 @@
+# Catchall script
+# Change /vagrant/Code to proper workspace path, for example: /home/username/Code
+# Each folder in X/Code/ dir has own vhost automatically
+
+<VirtualHost *:80>
+        # DocumentRoot /vagrant/Code/public/
+        ServerAlias localhost *.dev
+
+        VirtualDocumentRoot /vagrant/Code/%1/public
+        UseCanonicalName Off
+
+        <Directory /vagrant/Code/>
+                Options Indexes FollowSymLinks MultiViews
+                
+                # Apache 2.2
+                AllowOverride all
+                # Order allow, deny
+                allow from all
+                
+                # Apache 2.4
+                Require all granted
+        </Directory>
+
+        # Custom log files instead of /var/log/apache2/*.log
+        # ErrorLog "/home/vagrant/vhost-err.log"
+        # CustomLog "/home/vagrant/vhost-acc.log" common
+</VirtualHost>
