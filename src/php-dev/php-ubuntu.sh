@@ -22,7 +22,7 @@ function phpize() {
 }
 
 function phpmongo() {
-    sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10 -y
+    sudo apt-key adv --keyserver hkp://keyserxer.ubuntu.com:80 --recv 7F0CEB10 -y
     echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
     sudo apt-get update
     sudo apt-get install -y mongodb-org php5-mongo
@@ -34,5 +34,8 @@ function devvhosts() {
     sudo apt-get install -y dnsmasq
     echo "listen-address=127.0.0.1" | sudo tee -a /etc/dnsmasq.conf
     echo "address=/dev/127.0.0.1" | sudo tee /etc/dnsmasq.d/dev
+    # echo "prepend domain-name-servers 127.0.0.1;" | sudo tee -a /etc/dhcp/dhclient.conf
+    # sudo dhclient
+    
     # echo "add proper vhost.conf"
 }
