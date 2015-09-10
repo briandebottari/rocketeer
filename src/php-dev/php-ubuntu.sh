@@ -2,8 +2,7 @@
 # script for php lang
 
 function lamp() {
-    sudo apt-get install -y tasksel
-    sudo tasksel install lamp-server
+    sudo apt-get install -y lamp-server^
     sudo apt-get install -y php5-mcrypt
     echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/fqdn.conf && sudo a2enconf fqdn
     sudo a2enmod rewrite php5 unique_id ssl vhost_alias
