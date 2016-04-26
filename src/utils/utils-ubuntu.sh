@@ -7,7 +7,7 @@ function fishell() {
 }
 
 function ohmyzsh() {
-    sudo apt-get zsh git -y
+    sudo apt-get install zsh git -y
     curl -L http://install.ohmyz.sh | sh
 }
 
